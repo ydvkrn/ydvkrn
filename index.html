@@ -3,184 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Red Store - ऑनलाइन शॉपिंग</title>
+    <title>Shop - Home</title>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBt-l8Li4a2XY5RCsMMVrJaNWPfOTu0Pe0",
+            authDomain: "shopingmsm999.firebaseapp.com",
+            projectId: "shopingmsm999",
+            storageBucket: "shopingmsm999.firebasestorage.app",
+            messagingSenderId: "749849091485",
+            appId: "1:749849091485:web:3a060fae40b33a7292e374",
+            measurementId: "G-F328X50MV0"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        window.logout = function() {
+            signOut(auth).then(() => {
+                window.location.href = "login.html";
+            });
+        };
+
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                window.location.href = "login.html";
+            } else {
+                document.getElementById("user-email").innerText = user.email;
+            }
+        });
+
+        async function loadProducts() {
+            try {
+                let response = await fetch("data.json");
+                let products = await response.json();
+                let productContainer = document.getElementById("products");
+
+                products.forEach(product => {
+                    let productHTML = `
+                        <div class="product">
+                            <img src="${product.image}" alt="${product.name}">
+                            <h3>${product.name}</h3>
+                            <p>${product.description}</p>
+                            <button>🛒 Add to Cart</button>
+                        </div>
+                    `;
+                    productContainer.innerHTML += productHTML;
+                });
+            } catch (error) {
+                console.error("JSON लोड करने में समस्या:", error);
+            }
+        }
+
+        window.onload = loadProducts;
+    </script>
+
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
-
-        body {
-            background-color: #f5f5f5;
-            transition: 0.3s;
-        }
-
-        header {
-            background-color: #d32f2f;
-            color: white;
-            padding: 15px 10%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-        }
-
-        nav a {
-            color: white;
-            text-decoration: none;
-            margin: 0 15px;
-            font-size: 16px;
-        }
-
-        #searchBox {
-            padding: 8px;
-            width: 200px;
-            border-radius: 5px;
-            border: none;
-        }
-
-        .toggle-btn {
-            background: white;
-            border: none;
-            padding: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            border-radius: 5px;
-        }
-
-        .banner {
-            text-align: center;
-            padding: 50px;
-            background: linear-gradient(to right, #ff6f61, #d32f2f);
-            color: white;
-        }
-
-        .categories, .products {
-            padding: 30px 10%;
-        }
-
-        .section-title {
-            font-size: 22px;
-            margin-bottom: 15px;
-        }
-
-        .category-list, .product-list {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        .category, .product {
-            background-color: white;
-            padding: 15px;
-            text-align: center;
-            flex: 1;
-            border-radius: 8px;
-            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-            min-width: 150px;
-        }
-
-        .dark-mode {
-            background-color: #222;
-            color: white;
-        }
-
-        .dark-mode .category, 
-        .dark-mode .product {
-            background-color: #333;
-        }
+        body { font-family: Arial, sans-serif; background: #f8f8f8; text-align: center; }
+        .container { width: 90%; max-width: 800px; margin: auto; padding: 20px; background: white; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); border-radius: 10px; }
+        h1 { color: #d32f2f; }
+        .product { display: inline-block; width: 30%; margin: 10px; background: #fff; padding: 10px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); }
+        .product img { width: 100%; height: auto; border-radius: 5px; }
+        .product h3 { color: #d32f2f; }
+        .product button { background: #d32f2f; color: white; padding: 8px; border: none; cursor: pointer; border-radius: 5px; }
+        .product button:hover { background: #b71c1c; }
+        .navbar { display: flex; justify-content: space-between; padding: 10px; background: #d32f2f; color: white; }
+        .navbar a { color: white; text-decoration: none; padding: 10px; }
+        .navbar button { background: white; color: #d32f2f; padding: 8px; border: none; cursor: pointer; border-radius: 5px; }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="logo">Red Store</div>
-        <input type="text" id="searchBox" placeholder="🔍 प्रोडक्ट खोजें...">
-        <button class="toggle-btn" onclick="toggleDarkMode()">🌓</button>
-        <nav>
-            <a href="#">🏠 होम</a>
-            <a href="#">📦 कैटेगरी</a>
-            <a href="#">🛍 ऑर्डर</a>
-            <a href="#">👤 लॉगिन / रजिस्टर</a>
-        </nav>
-    </header>
+    <div class="navbar">
+        <a href="#">🏠 Home</a>
+        <a href="category.html">📂 Categories</a>
+        <a href="order.html">📦 Orders</a>
+        <span>👤 <span id="user-email">Loading...</span></span>
+        <button onclick="logout()">🚪 Logout</button>
+    </div>
 
-    <main>
-        <section class="banner">
-            <h1>Red Store - बेहतरीन शॉपिंग अनुभव</h1>
-            <p>आपके पसंदीदा प्रोडक्ट्स सबसे अच्छे दामों में!</p>
-        </section>
-
-        <section class="categories">
-            <h2 class="section-title">📂 कैटेगरी</h2>
-            <div class="category-list">
-                <div class="category">📱 मोबाइल्स</div>
-                <div class="category">👕 फैशन</div>
-                <div class="category">🏠 होम & फर्निशिंग</div>
-                <div class="category">📚 किताबें</div>
-            </div>
-        </section>
-
-        <section class="products">
-            <h2 class="section-title">🔥 ट्रेंडिंग प्रोडक्ट्स</h2>
-            <div class="product-list" id="productList">
-                <!-- JavaScript से प्रोडक्ट्स लोड होंगे -->
-            </div>
-        </section>
-    </main>
-
-    <script>
-        // 🌙 डार्क मोड टॉगल फंक्शन
-        function toggleDarkMode() {
-            document.body.classList.toggle("dark-mode");
-        }
-
-        // 🔥 डमी प्रोडक्ट डेटा (Copyright Free)
-        const products = [
-            { name: "📱 स्मार्टफोन", category: "Electronics" },
-            { name: "💻 लैपटॉप", category: "Electronics" },
-            { name: "👟 शूज़", category: "Fashion" },
-            { name: "👔 टी-शर्ट", category: "Fashion" },
-            { name: "🍳 माइक्रोवेव", category: "Home & Kitchen" },
-            { name: "📖 नोवल", category: "Books" },
-            { name: "🎧 हेडफोन", category: "Electronics" },
-            { name: "👜 हैंडबैग", category: "Fashion" }
-        ];
-
-        // ✅ प्रोडक्ट्स लोड करना
-        function loadProducts() {
-            const productList = document.getElementById("productList");
-            products.forEach(product => {
-                let div = document.createElement("div");
-                div.classList.add("product");
-                div.textContent = product.name;
-                productList.appendChild(div);
-            });
-        }
-
-        // 🔍 सर्च फंक्शन
-        document.getElementById("searchBox").addEventListener("input", function() {
-            let searchText = this.value.toLowerCase();
-            let productDivs = document.querySelectorAll(".product");
-            
-            productDivs.forEach(div => {
-                if (div.textContent.toLowerCase().includes(searchText)) {
-                    div.style.display = "block";
-                } else {
-                    div.style.display = "none";
-                }
-            });
-        });
-
-        // ✅ पेज लोड होते ही प्रोडक्ट लोड करें
-        window.onload = loadProducts;
-    </script>
+    <div class="container">
+        <h1>🛍️ Welcome to Shop</h1>
+        <div id="products"></div>
+    </div>
 
 </body>
 </html>
