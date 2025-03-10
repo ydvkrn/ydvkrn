@@ -29,6 +29,12 @@
             signInWithEmailAndPassword(auth, email, password)
             .then(() => {
                 message.innerHTML = "✅ लॉगिन सफल!";
+
+                // 2 सेकंड बाद index.html पर रीडायरेक्ट करें
+                setTimeout(() => {
+                    window.location.href = "index.html";
+                }, 2000);
+
             })
             .catch((error) => {
                 message.innerHTML = "❌ त्रुटि: " + error.message;
