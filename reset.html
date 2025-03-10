@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reset Password</title>
+    <script type="module">
+        // Firebase SDKs Import
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
+
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBt-l8Li4a2XY5RCsMMVrJaNWPfOTu0Pe0",
+            authDomain: "shopingmsm999.firebaseapp.com",
+            projectId: "shopingmsm999",
+            storageBucket: "shopingmsm999.firebasestorage.app",
+            messagingSenderId: "749849091485",
+            appId: "1:749849091485:web:3a060fae40b33a7292e374",
+            measurementId: "G-F328X50MV0"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const analytics = getAnalytics(app);
+
+        // Function to Reset Password
+        window.resetPassword = function() {
+            let email = document.getElementById("email").value;
+            let message = document.getElementById("message");
+
+            if (email === "") {
+                message.innerHTML = "⚠️ कृपया ईमेल दर्ज करें!";
+                return;
+            }
+
+            sendPasswordResetEmail(auth, email)
+            .then(() => {
+                message.innerHTML = "✅ पासवर्ड रीसेट लिंक ईमेल पर भेज दिया गया!";
+            })
+            .catch((error) => {
+                message.innerHTML = "❌ कोई समस्या हुई: " + error.message;
+            });
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f8f8;
+            text-align: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            margin: 80px auto;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        h2 {
+            color: #d32f2f;
+        }
+
+        input {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #d32f2f;
+            color: white;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background: #b71c1c;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>🔄 पासवर्ड रीसेट</h2>
+        <input type="email" id="email" placeholder="✉️ ईमेल दर्ज करें" required>
+        <button onclick="resetPassword()">🔗 रीसेट लिंक भेजें</button>
+        <p id="message"></p>
+    </div>
+
+</body>
+</html>
